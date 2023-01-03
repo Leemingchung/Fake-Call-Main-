@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Call3">
+    tools:context=".SelectSreen">
     <GridView
         android:layout_margin="10dp"
         android:id="@+id/gridview"

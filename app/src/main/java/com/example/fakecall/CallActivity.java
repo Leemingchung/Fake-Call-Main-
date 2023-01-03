@@ -1,7 +1,6 @@
 package com.example.fakecall ;
 
 import android.annotation.TargetApi;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,6 +55,7 @@ public class CallActivity extends AppCompatActivity {
     int sec = 0;
     SharedPreferences sharedPref;
     Thread t;
+    SelectSreen selectSreen;
 //    InterstitialAd mInterstitialAd;
 //    AdRequest adRequestint;
 
@@ -68,18 +68,19 @@ public class CallActivity extends AppCompatActivity {
         window.addFlags(FLAG_SHOW_WHEN_LOCKED);
         window.addFlags(FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        int chung =(R.layout.activity_call2) ;
+        switch (selectSreen.idlayout)
+        {
+            case 0 :
+                setContentView(R.layout.activity_call_oppo);
+                break;
+            case 1 :
+                setContentView(R.layout.activity_call2);
+                break;
+            default:
+                setContentView(R.layout.activity_call);
+                break;
 
-//        switch (idLayout)
-//        {
-//            case 1 :
-                setContentView(chung);
-//            case 2 :
-//                setContentView(R.layout.activity_call);
-//            default:
-//                setContentView(R.layout.activity_call2);
-//
-//        }
+        }
 
        // loadInterstitialAd();
         context = this;
@@ -96,7 +97,7 @@ public class CallActivity extends AppCompatActivity {
         reject = (ImageView) findViewById(R.id.gif_reject);
         main = Thread.currentThread();
         main.setName("Main Thread");
-        setCaller();
+     //   setCaller();
 
     }
 //    private void loadInterstitialAd() {
@@ -280,11 +281,11 @@ public class CallActivity extends AppCompatActivity {
 
     @TargetApi(16)
     void setCaller() {
-        String name = sharedPref.getString("name", "");
-        String phone = sharedPref.getString("number", "");
+//        String name = sharedPref.getString("name", "");
+//        String phone = sharedPref.getString("number", "");
         String image = sharedPref.getString("image", "");
-        nameText.setText(name);
-        phoneText.setText(phone);
+        //nameText.setText(name);
+        //phoneText.setText(phone);
         int obj = -1;
         switch (image.hashCode()) {
             case 0:

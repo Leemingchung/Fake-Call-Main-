@@ -65,6 +65,10 @@ public class ScheduleActivity extends AppCompatActivity {
                 time = "30 Min";
                 break;
         }
+//        if()
+//        {
+//
+//        }
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ((long) (timer * 1000)), alarmIntent);
         Toast.makeText(this, "Call timer Set to: " + time, Toast.LENGTH_LONG).show();
         finish();
@@ -72,7 +76,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(getApplication(), Main3.class));
+        startActivity(new Intent(getApplication(), FragmentMain.class));
         finish();
     }
 }

@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class GridAdapter extends BaseAdapter {
     Context context ;
     List<Model> list;
-
+    int idlayout ;
     public GridAdapter(Context context, List<Model> list) {
         this.context = context;
         this.list = list;
@@ -38,6 +39,7 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
+        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
         return 0;
     }
 
@@ -45,6 +47,7 @@ public class GridAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder ;
         final Model model = list.get(i);
+        Toast.makeText(context, ""+model, Toast.LENGTH_SHORT).show();
         if (view == null)
         {
             viewHolder = new ViewHolder();
@@ -58,6 +61,8 @@ public class GridAdapter extends BaseAdapter {
         }
         viewHolder.textView.setText(model.getName());
         viewHolder.imageView.setImageResource(model.getImageView());
+        //
+
         return  view ;
     }
     class ViewHolder{
