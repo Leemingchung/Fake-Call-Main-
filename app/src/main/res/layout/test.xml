@@ -154,14 +154,14 @@
                     android:padding="20dp"
                     >
                 <TextView
-                    android:id="@+id/textView_charater"
+                    android:id="@+id/textView_phoneBook"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawablePadding="10dp"
                     android:drawableTop="@drawable/ic_person_white_36dp"
                     android:gravity="center"
                     android:onClick="characterClick"
-                    android:text="Charcter"
+                    android:text="Phone Book"
                     android:textColor="#ffffffff"
                     android:textSize="14sp"
                     />
@@ -220,10 +220,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="10dp"
-                android:drawableTop="@drawable/ic_record_voice_over_white"
+                android:drawableTop="@drawable/home_screen"
                 android:gravity="center"
                 android:onClick="soundClick"
-                android:text="Add Voice"
+                android:text="Select Screen"
                 android:textColor="#ffffffff"
                 android:textSize="14sp" />
                 </LinearLayout>
@@ -237,16 +237,16 @@
             android:layout_height="wrap_content"
 
             >
-            <Button
-                android:id="@+id/danhsach"
-                android:layout_marginHorizontal="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="55dp"
-                android:onClick="scheduleClick"
-                android:text="danh bạ "
-                android:backgroundTint="#E91E1E"
-                android:textColor="#ffffffff" />
+<!--            <Button-->
+<!--                android:id="@+id/danhsach"-->
+<!--                android:layout_marginHorizontal="10dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="65dp"-->
+<!--                android:layout_marginTop="55dp"-->
+<!--                android:onClick="scheduleClick"-->
+<!--                android:text="danh bạ "-->
+<!--                android:backgroundTint="#E91E1E"-->
+<!--                android:textColor="#ffffffff" />-->
 
             <Button
                 android:id="@+id/button2"

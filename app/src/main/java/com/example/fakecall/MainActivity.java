@@ -32,19 +32,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.loader.content.CursorLoader;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -65,9 +66,9 @@ public class MainActivity extends Fragment implements  IOnBackPressed{
     int dialogId;
     EditText nameEditText;
     EditText phoneEditText;
-    Button call , more , danhba;
+    Button call , more ;
     CircularImageView circularImageView ;
-    TextView ringtoneClick ,characterClick , soundClick, bookPhone  ;
+    TextView ringtoneClick ,Phonebook, soundClick, bookPhone  ;
     int picker;
     SharedPreferences sharedPref;
     private static final int CONTACT_PERMISSION_CODE = 8;
@@ -75,12 +76,19 @@ public class MainActivity extends Fragment implements  IOnBackPressed{
     private static final int  RESULT_OKE = -1;
 //    private AdView mAdView;
 //    AdRequest adRequestint;
-
     public void onResume() {
         super.onResume();
         setCaller();
     }
+    void setimg(String image)
+    {
+       switch (image)
+       {
+           case "chung" :
+               callerImage.setImageResource(R.drawable.person_add_grey);
 
+       }
+    }
     void setCaller() {
         String name = sharedPref.getString("name", "");
         String phone = sharedPref.getString("number", "");
@@ -146,8 +154,10 @@ public class MainActivity extends Fragment implements  IOnBackPressed{
                 callerImage.setImageResource(R.drawable.gallery_btn_4);
                 return;
             default:
+                Toast.makeText(getContext(), "" + image, Toast.LENGTH_SHORT).show();
                 callerImage.setImageDrawable(Drawable.createFromPath(image));
-//                Glide.with(getApplicationContext()).load(image).into(callerImage);
+                return;
+               // Glide.with(con).load(image).into(callerImage);
         }
     }
 
@@ -210,19 +220,23 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
     View view = inflater.inflate(R.layout.test , container , false) ;
         nameEditText =  view.findViewById(R.id.caller_name);
         phoneEditText = view. findViewById(R.id.caller_number);
-        callerImage = view. findViewById(R.id.caller_image);
-        danhba = view.findViewById(R.id.danhsach) ;
-        danhba.setOnClickListener(new View.OnClickListener() {
+        callerImage = view.findViewById(R.id.caller_image);
+
+        getParentFragmentManager().setFragmentResultListener("data1", this, new FragmentResultListener() {
             @Override
-            public void onClick(View view) {
-                if (checkContectPermission())
-                {
-                    pickContactInten() ;
-                }else {
-                    requestContectPermission();
-                }
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                String data = result.getString("name") ;
+                nameEditText .setText(data);
+                phoneEditText.setText(result.getString("number"));
+                setimg(result.getString("img"));
+                Toast.makeText(getContext(), "" + result.getString("img"), Toast.LENGTH_SHORT).show();
+                //String name = result.getString("img");
+                //Log.e("img",""+name) ;
+
             }
         });
+
+
         circularImageView  = view.findViewById(R.id.caller_image) ;
         circularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,12 +291,18 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
              }
          });
          // character
-    characterClick = view.findViewById(R.id.textView_charater) ;
-    characterClick.setOnClickListener(new View.OnClickListener() {
+    Phonebook = view.findViewById(R.id.textView_phoneBook) ;
+    Phonebook.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ON_CLICK = ON_CHAR_CLICK;
-            startActivityForResult(new Intent( getActivity(), CharacterActivity.class), 1);
+           // startActivityForResult(new Intent( getActivity(), danhba.class), 1);
+            if (checkContectPermission())
+            {
+                pickContactInten() ;
+            }else {
+                requestContectPermission();
+            }
         }
     });
     //
@@ -306,7 +326,7 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         @Override
         public void onClick(View view) {
             //
-            Intent intent = new Intent(getContext() , Call3.class) ;
+            Intent intent = new Intent(getContext() , SelectSreen.class) ;
             startActivity(intent);
         }
     });
@@ -454,7 +474,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         Toast.makeText(getContext(), " "+ resultCode, Toast.LENGTH_SHORT).show();
         if(resultCode==-1)
         {
-            Toast.makeText (getContext(), "đã chạy vafod dây ", Toast.LENGTH_SHORT).show ();
             switch (requestCode) {
                 case CONTACT_PICK_CODE:
                     Toast.makeText (getContext(), "retommmmmm"+requestCode, Toast.LENGTH_SHORT).show ();

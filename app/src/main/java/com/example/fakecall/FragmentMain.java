@@ -3,8 +3,6 @@ package com.example.fakecall;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
@@ -19,7 +17,7 @@ import com.example.fakecall.Adapter.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class Main3 extends AppCompatActivity {
+public class FragmentMain extends AppCompatActivity {
     private TabLayout tablayout ;
     private ViewPager2 viewPager ;
     Toolbar mtoolbar ;
@@ -65,7 +63,7 @@ public class Main3 extends AppCompatActivity {
                     break;
                 case 1:
                     tab.setIcon(R.drawable.book);
-                    tab.setText("History") ;
+                    tab.setText("Character") ;
                     //item.setVisible(true);
                     break ;
             }

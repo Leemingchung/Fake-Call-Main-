@@ -33,7 +33,7 @@ public class CustomDialog extends Dialog implements OnClickListener {
         sharedPref = c.getSharedPreferences("file", 0);
         add = (Button) findViewById(R.id.btn_add);
         remove = (Button) findViewById(R.id.btn_remove);
-        choose = (Button) findViewById(R.id.btn_choose);
+        //choose = (Button) findViewById(R.id.btn_choose);
         String path;
         if (id == 1) {
             path = sharedPref.getString("audio", "");
@@ -67,7 +67,7 @@ public class CustomDialog extends Dialog implements OnClickListener {
         }
         add.setOnClickListener(this);
         remove.setOnClickListener(this);
-        choose.setOnClickListener(this);
+//        choose.setOnClickListener(this);
     }
 
     public void onBackPressed() {
@@ -83,9 +83,7 @@ public class CustomDialog extends Dialog implements OnClickListener {
             case R.id.btn_remove :
                 buttonClick = 1;
                 break;
-            case R.id.btn_choose :
-                buttonClick = 2;
-                break;
+
         }
         dismiss();
     }
