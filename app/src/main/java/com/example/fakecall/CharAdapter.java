@@ -1,26 +1,32 @@
 package com.example.fakecall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.fakecall.DAO.ModelCharacter;
+
 import java.util.ArrayList;
 
 public class CharAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
-    ArrayList<Charactor> categroyArrayList;
+    ArrayList<ModelCharacter> categroyArrayList;
     Context context;
-
+    CovertIMG covertIMG ;
     public class Holder {
         ImageView img;
         TextView tv;
         TextView tv2;
     }
 
-    public CharAdapter(Context mainActivity, ArrayList<Charactor> categroyArrayList) {
+    public CharAdapter(Context mainActivity, ArrayList<ModelCharacter> categroyArrayList) {
         this.categroyArrayList = categroyArrayList;
         this.context = mainActivity;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,8 +58,9 @@ public class CharAdapter extends BaseAdapter {
             holder = (Holder) rowView.getTag();
         }
         holder.tv.setText((categroyArrayList.get(position)).getName());
-        holder.tv2.setText((categroyArrayList.get(position)).getNumber());
-        holder.img.setImageResource((categroyArrayList.get(position)).getImgId());
+        holder.tv2.setText((categroyArrayList.get(position)).getSdt());
+        holder.img.setImageBitmap(CovertIMG.getImage(categroyArrayList.get(position).getHinhanh()));
+
         return rowView;
     }
 }

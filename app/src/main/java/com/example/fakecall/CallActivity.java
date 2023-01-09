@@ -68,19 +68,19 @@ public class CallActivity extends AppCompatActivity {
         window.addFlags(FLAG_SHOW_WHEN_LOCKED);
         window.addFlags(FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        switch (selectSreen.idlayout)
-        {
-            case 0 :
-                setContentView(R.layout.activity_call_oppo);
-                break;
-            case 1 :
+//        switch (selectSreen.idlayout)
+//        {
+//            case 0 :
+//                setContentView(R.layout.activity_call_oppo);
+//                break;
+           // case 1 :
                 setContentView(R.layout.activity_call2);
-                break;
-            default:
-                setContentView(R.layout.activity_call);
-                break;
+//                break;
+//            default:
+//                setContentView(R.layout.activity_call);
+//                break;
 
-        }
+       // }
 
        // loadInterstitialAd();
         context = this;
@@ -97,7 +97,7 @@ public class CallActivity extends AppCompatActivity {
         reject = (ImageView) findViewById(R.id.gif_reject);
         main = Thread.currentThread();
         main.setName("Main Thread");
-     //   setCaller();
+        setCaller();
 
     }
 //    private void loadInterstitialAd() {
@@ -281,72 +281,73 @@ public class CallActivity extends AppCompatActivity {
 
     @TargetApi(16)
     void setCaller() {
-//        String name = sharedPref.getString("name", "");
-//        String phone = sharedPref.getString("number", "");
+        String name = sharedPref.getString("name", "");
+        String phone = sharedPref.getString("number", "");
         String image = sharedPref.getString("image", "");
-        //nameText.setText(name);
-        //phoneText.setText(phone);
+
+        nameText.setText(name);
+        phoneText.setText(phone);
         int obj = -1;
-        switch (image.hashCode()) {
-            case 0:
-                if (image.equals("")) {
-                    obj = 0;
-                    break;
-                }
-                break;
-            case 48:
-                if (image.equals("0")) {
-                    obj = 1;
-                    break;
-                }
-                break;
-            case 49:
-                if (image.equals("1")) {
-                    obj = 2;
-                    break;
-                }
-                break;
-            case 50:
-                if (image.equals("2")) {
-                    obj = 3;
-                    break;
-                }
-                break;
-            case 51:
-                if (image.equals("3")) {
-                    obj = 4;
-                    break;
-                }
-                break;
-            case 52:
-                if (image.equals("4")) {
-                    obj = 5;
-                    break;
-                }
-                break;
-        }
-        switch (obj) {
-            case 0:
-                callerImg.setImageResource(R.drawable.person);
-                return;
-            case 1:
-                callerImg.setImageResource(R.drawable.gallery_btn_0);
-                return;
-            case 2:
-                callerImg.setImageResource(R.drawable.gallery_btn_1);
-                return;
-            case 3:
-                callerImg.setImageResource(R.drawable.gallery_btn_2);
-                return;
-            case 4:
-                callerImg.setImageResource(R.drawable.gallery_btn_3);
-                return;
-            case 5:
-                callerImg.setImageResource(R.drawable.gallery_btn_4);
-                return;
-            default:
+//        switch (image.hashCode()) {
+//            case 0:
+//                if (image.equals("")) {
+//                    obj = 0;
+//                    break;
+//                }
+//                break;
+//            case 48:
+//                if (image.equals("0")) {
+//                    obj = 1;
+//                    break;
+//                }
+//                break;
+//            case 49:
+//                if (image.equals("1")) {
+//                    obj = 2;
+//                    break;
+//                }
+//                break;
+//            case 50:
+//                if (image.equals("2")) {
+//                    obj = 3;
+//                    break;
+//                }
+//                break;
+//            case 51:
+//                if (image.equals("3")) {
+//                    obj = 4;
+//                    break;
+//                }
+//                break;
+//            case 52:
+//                if (image.equals("4")) {
+//                    obj = 5;
+//                    break;
+//                }
+//                break;
+//        }
+//        switch (obj) {
+//            case 0:
+//                callerImg.setImageResource(R.drawable.person);
+//                return;
+//            case 1:
+//                callerImg.setImageResource(R.drawable.gallery_btn_0);
+//                return;
+//            case 2:
+//                callerImg.setImageResource(R.drawable.gallery_btn_1);
+//                return;
+//            case 3:
+//                callerImg.setImageResource(R.drawable.gallery_btn_2);
+//                return;
+//            case 4:
+//                callerImg.setImageResource(R.drawable.gallery_btn_3);
+//                return;
+//            case 5:
+//                callerImg.setImageResource(R.drawable.gallery_btn_4);
+//                return;
+//            default:
                 callerImg.setImageDrawable(Drawable.createFromPath(image));
-        }
+        //}
     }
 
     public void onBackPressed() {
