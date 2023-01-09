@@ -3,6 +3,7 @@ package com.example.fakecall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
@@ -11,6 +12,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -32,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,10 +52,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.loader.content.CursorLoader;
 
+import com.example.fakecall.DAO.CharacterDAO;
+import com.example.fakecall.DAO.ModelCharacter;
+import com.example.fakecall.Database.SQL;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends Fragment implements  IOnBackPressed{
     private static final int REQUEST_READ_PERMISSION = 786;
@@ -70,95 +79,73 @@ public class MainActivity extends Fragment implements  IOnBackPressed{
     CircularImageView circularImageView ;
     TextView ringtoneClick ,Phonebook, soundClick, bookPhone  ;
     int picker;
+    CharacterDAO characterDAO ;
+    ArrayList<ModelCharacter> list  ;
     SharedPreferences sharedPref;
     private static final int CONTACT_PERMISSION_CODE = 8;
     private static final int CONTACT_PICK_CODE = 9;
     private static final int  RESULT_OKE = -1;
+    CharAdapter adapter ;
+    CharacterActivity characterActivity ;
 //    private AdView mAdView;
 //    AdRequest adRequestint;
     public void onResume() {
         super.onResume();
         setCaller();
     }
-    void setimg(String image)
-    {
-       switch (image)
-       {
-           case "chung" :
-               callerImage.setImageResource(R.drawable.person_add_grey);
 
-       }
+    public static int getImageId(Context context, String imageName) {
+        return context.getResources().getIdentifier("drawable/" + imageName, null, context.getPackageName());
     }
+
     void setCaller() {
         String name = sharedPref.getString("name", "");
         String phone = sharedPref.getString("number", "");
         String image = sharedPref.getString("image", "");
         nameEditText.setText(name);
         phoneEditText.setText(phone);
-        int obj = -1;
-        switch (image.hashCode()) {
-            case 0:
-                if (image.equals("")) {
-                    obj = 0;
-                    break;
-                }
-                break;
-            case 48:
-                if (image.equals("0")) {
-                    obj = 1;
-                    break;
-                }
-                break;
-            case 49:
-                if (image.equals("1")) {
-                    obj = 2;
-                    break;
-                }
-                break;
-            case 50:
-                if (image.equals("2")) {
-                    obj = 3;
-                    break;
-                }
-                break;
-            case 51:
-                if (image.equals("3")) {
-                    obj = 4;
-                    break;
-                }
-                break;
-            case 52:
-                if (image.equals("4")) {
-                    obj = 5;
-                    break;
-                }
-                break;
-        }
-        switch (obj) {
-            case 0:
-                callerImage.setImageResource(R.drawable.person_add_grey);
-                return;
-            case 1:
-                callerImage.setImageResource(R.drawable.gallery_btn_0);
-                return;
-            case 2:
-                callerImage.setImageResource(R.drawable.gallery_btn_1);
-                return;
-            case 3:
-                callerImage.setImageResource(R.drawable.gallery_btn_2);
-                return;
-            case 4:
-                callerImage.setImageResource(R.drawable.gallery_btn_3);
-                return;
-            case 5:
-                callerImage.setImageResource(R.drawable.gallery_btn_4);
-                return;
-            default:
-                Toast.makeText(getContext(), "" + image, Toast.LENGTH_SHORT).show();
+       // Log.e("img ",""+image) ;
+        //callerImage.setImageBitmap(CovertIMG.getImage());
+        //callerImage.setImageBitmap(CovertIMG.getImage(image));
+//        int obj = -1;
+//        switch (image.hashCode()) {
+//            case 0:
+//                if (image.equals("")) {
+//                    obj = 0;
+//                    break;
+//                }
+//                break;
+//            case 48:
+//                if (image.equals("0")) {
+//                    obj = 1;
+//                    break;
+//                }
+//                break;
+//
+//        switch (obj) {
+//            case 0:
+//                callerImage.setImageResource(R.drawable.person_add_grey);
+//                return;
+//            case 1:
+//                callerImage.setImageResource(R.drawable.gallery_btn_0);
+//                return;
+//            case 2:
+//                callerImage.setImageResource(R.drawable.gallery_btn_1);
+//                return;
+//            case 3:
+//                callerImage.setImageResource(R.drawable.gallery_btn_2);
+//                return;
+//            case 4:
+//                callerImage.setImageResource(R.drawable.gallery_btn_3);
+//                return;
+//            case 5:
+//                callerImage.setImageResource(R.drawable.gallery_btn_4);
+//                return;
+//            default:
                 callerImage.setImageDrawable(Drawable.createFromPath(image));
-                return;
+              //  return;
                // Glide.with(con).load(image).into(callerImage);
-        }
+       // }
     }
 
     public void rateUs() {
@@ -221,14 +208,22 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         nameEditText =  view.findViewById(R.id.caller_name);
         phoneEditText = view. findViewById(R.id.caller_number);
         callerImage = view.findViewById(R.id.caller_image);
+        Button testsave = view.findViewById(R.id.test) ;
 
-        getParentFragmentManager().setFragmentResultListener("data1", this, new FragmentResultListener() {
+    SQL sql = new SQL(getContext()) ;
+    SQLiteDatabase readableDatabase = sql.getReadableDatabase();
+    readableDatabase.close();
+    Insert() ;
+    getParentFragmentManager().setFragmentResultListener("data1", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 String data = result.getString("name") ;
                 nameEditText .setText(data);
                 phoneEditText.setText(result.getString("number"));
-                setimg(result.getString("img"));
+                Bitmap bitmap = BitmapFactory.decodeByteArray(result.getByteArray("img"), 0,result.getByteArray("img").length);
+                Log.e("chung1" , ""+bitmap) ;
+                callerImage.setImageBitmap(bitmap);
+
                 Toast.makeText(getContext(), "" + result.getString("img"), Toast.LENGTH_SHORT).show();
                 //String name = result.getString("img");
                 //Log.e("img",""+name) ;
@@ -236,6 +231,56 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
             }
         });
 
+    //test
+    testsave .setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            ModelCharacter character = new ModelCharacter() ;
+
+            character.setName(nameEditText.getText().toString());
+            character.setSdt(phoneEditText.getText().toString());
+            character.setHinhanh( ImageView_To_Byte(callerImage)) ;
+            String sdt = phoneEditText.getText().toString();
+            //
+            characterDAO = new CharacterDAO(getContext()) ;
+
+
+             if(characterDAO.getsdt(sdt)==-1)
+            {
+                Toast.makeText(getContext(), " chưa có sdt này " + characterDAO.getsdt(sdt), Toast.LENGTH_SHORT).show();
+                long kq = characterDAO.inserCharacter(character);
+                if (kq>0)
+                {
+                    adapter = new CharAdapter(getContext() , list) ;
+                    list = new ArrayList<>() ;
+                    list.addAll(characterDAO.getAll()) ;
+                    list.clear();
+                    list.addAll(characterDAO.getAll()) ;
+                    adapter.notifyDataSetChanged();
+                    characterActivity.Reset();
+                    Toast.makeText(getContext(), " thêm thàng công ", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+            else if(characterDAO.getsdt(sdt)>0)
+            {
+                Toast.makeText(getContext(), " đã có sdt này "+ characterDAO.getsdt(sdt), Toast.LENGTH_SHORT).show();
+                character.setName(nameEditText.getText().toString());
+                character.setHinhanh(ImageView_To_Byte(callerImage));
+                adapter = new CharAdapter(getContext() , list) ;
+                characterDAO.update(character) ;
+                list = new ArrayList<>() ;
+                list.clear();
+                list.addAll(characterDAO.getAll()) ;
+                adapter.notifyDataSetChanged();
+                characterActivity.Reset();
+                return;
+            }
+            else {
+                Toast.makeText(getContext(), " Thêm thất bại ", Toast.LENGTH_SHORT).show();
+            }
+        }
+    });
 
         circularImageView  = view.findViewById(R.id.caller_image) ;
         circularImageView.setOnClickListener(new View.OnClickListener() {
@@ -286,7 +331,7 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
              public void onClick(View view) {
                  ON_CLICK = ON_SHADLE_CLICK;
                  startActivity(new Intent(getActivity(), ScheduleActivity.class));
-                 //startActivity(new Intent(getActivity(), Call3.class));
+               //  startActivity(new Intent(getActivity(), Call3.class));
                  getActivity().finish();
              }
          });
@@ -468,7 +513,23 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
             }
         }
     }
-
+    public void Insert ()
+    {
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.backgroundsamsaung , null);
+        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.gallery_btn_2, null);
+        Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.gallery_btn_4, null);
+       ModelCharacter modelCharacter = new ModelCharacter( "Chung","0388916123",CovertIMG.getBytes(bitmap1)) ;
+       ModelCharacter modelCharacter1 = new ModelCharacter( "Mamy","0382365478",CovertIMG.getBytes(bitmap2)) ;
+       ModelCharacter modelCharacter2 = new ModelCharacter( "Papa","0383598545",CovertIMG.getBytes(bitmap3)) ;
+       characterDAO = new CharacterDAO(this.getContext());
+       if (characterDAO.getsdt(modelCharacter.getSdt())<0)
+       {
+           characterDAO.inserCharacter(modelCharacter) ;
+           characterDAO.inserCharacter(modelCharacter1) ;
+           characterDAO.inserCharacter(modelCharacter2) ;
+       }
+       else return;
+    }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
         Toast.makeText(getContext(), " "+ resultCode, Toast.LENGTH_SHORT).show();
@@ -722,12 +783,8 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
 
                // editText.setText(nameContact+ " "+ cNumber);
             }
-
-
             int phoneName = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-
             phoneNamee = cursor.getString (phoneName);
-            Log.e("TAG2" , "" + phoneNo);
             nameEditText.setText(phoneNamee);
             //
             int phoneIndex = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER);
@@ -739,6 +796,15 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         } catch (Exception e) {
             e.printStackTrace ();
         }
+    }
+    public byte[] ImageView_To_Byte(ImageView h)
+    {
+        BitmapDrawable drawable = (BitmapDrawable) h.getDrawable() ;
+        Bitmap bmp = drawable.getBitmap() ;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
+         bmp.compress(Bitmap.CompressFormat.PNG , 100 , stream) ;
+         byte []  byteArray = stream.toByteArray() ;
+         return byteArray ;
     }
 
 }

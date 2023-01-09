@@ -77,6 +77,7 @@ public class ScheduleActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(getApplication(), FragmentMain.class));
+        Toast.makeText(this, "Đã thêm 1 bản mới", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

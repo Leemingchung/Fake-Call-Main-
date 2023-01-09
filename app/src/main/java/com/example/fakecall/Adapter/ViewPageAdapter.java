@@ -1,5 +1,9 @@
 package com.example.fakecall.Adapter;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,14 +18,17 @@ import com.example.fakecall.Fagment.HomeFragment;
 import com.example.fakecall.MainActivity;
 
 public class ViewPageAdapter extends FragmentStateAdapter {
+    public  static  int chung  ;
     public ViewPageAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
     @NonNull
     @Override
-    public Fragment createFragment(int position) {
-        switch (position)
+    public  Fragment createFragment(int position) {
+        chung = position ;
+        Log.e(" Tab","" + chung) ;
+        switch (chung)
         {
             case 0 :
                 return new MainActivity();

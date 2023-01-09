@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,10 +19,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class FragmentMain extends AppCompatActivity {
-    private TabLayout tablayout ;
+    static TabLayout tablayout ;
     private ViewPager2 viewPager ;
-    Toolbar mtoolbar ;
+    static Toolbar mtoolbar ;
     private ViewPageAdapter pageAdapter  ;
+    public static int idvip ;
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class FragmentMain extends AppCompatActivity {
         viewPager.setAdapter(pageAdapter);
         mtoolbar =  findViewById(R.id.toolbar) ;
         mtoolbar.setTitle("Fake Call");
+
         tablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -54,22 +57,20 @@ public class FragmentMain extends AppCompatActivity {
 //            MenuItem item = (MenuItem) findViewById(R.id.delete);
 //            item.setVisible(false);
             this.invalidateOptionsMenu() ;
+            Log.e("Tg5" ," "+position) ;
             switch (position)
             {
                 case 0 :
                     tab.setIcon(R.drawable.call);
                     tab.setText("home") ;
-                    //item.setVisible(false);
                     break;
                 case 1:
                     tab.setIcon(R.drawable.book);
                     tab.setText("Character") ;
-                    //item.setVisible(true);
                     break ;
             }
         }) .attach();
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu , menu);
