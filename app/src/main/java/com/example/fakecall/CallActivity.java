@@ -29,6 +29,9 @@ import static android.view.WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.example.fakecall.Fagment.TabViewDataSingleton;
+
 public class CallActivity extends AppCompatActivity {
     ImageView accept;
     RelativeLayout attend;
@@ -49,13 +52,22 @@ public class CallActivity extends AppCompatActivity {
     MediaPlayer mp;
     TextView nameText;
     int originalVolume;
-    TextView phoneText;
+    TextView phoneText , title;
     Ringtone r;
     ImageView reject;
     int sec = 0;
     SharedPreferences sharedPref;
     Thread t;
     SelectSreen selectSreen;
+    //
+    Boolean check1 = Boolean.FALSE;
+    Boolean checkCalender = Boolean.TRUE;
+    Boolean checkNote = Boolean.TRUE;
+    Boolean checkAddcall = Boolean.TRUE;
+    Boolean checkPerson = Boolean.TRUE;
+    Boolean checkMute = Boolean.TRUE;
+    //
+    ImageView hold , calenda , note , addcall , person , mute ;
 //    InterstitialAd mInterstitialAd;
 //    AdRequest adRequestint;
 
@@ -68,27 +80,44 @@ public class CallActivity extends AppCompatActivity {
         window.addFlags(FLAG_SHOW_WHEN_LOCKED);
         window.addFlags(FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
-//        switch (selectSreen.idlayout)
-//        {
-//            case 0 :
-//                setContentView(R.layout.activity_call_oppo);
-//                break;
-           // case 1 :
+        switch (selectSreen.idlayout)
+        {
+            case 0 :
+                setContentView(R.layout.activity_call_oppo);
+                break;
+            case 1 :
                 setContentView(R.layout.activity_call2);
-//                break;
-//            default:
-//                setContentView(R.layout.activity_call);
-//                break;
+                break;
+            case 2 :
+                setContentView(R.layout.samsunga10);
+                break;
+            case 3:
+                setContentView(R.layout.call4);
+                break;
 
-       // }
+        }
 
        // loadInterstitialAd();
-        context = this;
         calling = (RelativeLayout) findViewById(R.id.calling);
         callerImg = (ImageView) findViewById(R.id.caller_image);
         attend = (RelativeLayout) findViewById(R.id.attend);
         incomming = (TextView) findViewById(R.id.timer);
         inCall = (TextView) findViewById(R.id.text_in_call);
+        imageView = (ImageView) findViewById(R.id.speaker);
+        hold = (ImageView) findViewById(R.id.imgHold) ;
+        calenda = (ImageView) findViewById(R.id.imgCalender) ;
+        note = (ImageView) findViewById(R.id.imgNote) ;
+        addcall = (ImageView) findViewById(R.id.imgaddCall) ;
+        person = (ImageView) findViewById(R.id.imgcontacts) ;
+        mute = (ImageView) findViewById(R.id.imgmute) ;
+        //
+        context = this;
+        calling = (RelativeLayout) findViewById(R.id.calling);
+        title = (TextView) findViewById(R.id.title);
+        callerImg = (ImageView) findViewById(R.id.caller_image);
+        attend = (RelativeLayout) findViewById(R.id.attend);
+        incomming = (TextView) findViewById(R.id.timer);
+       // inCall = (TextView) findViewById(R.id.text_in_call);
         imageView = (ImageView) findViewById(R.id.speaker);
         sharedPref = getSharedPreferences("file", 0);
         nameText = (TextView) findViewById(R.id.caller_name);
@@ -137,6 +166,7 @@ public class CallActivity extends AppCompatActivity {
                 mp.release();
             }
         }
+        title.setVisibility(View.GONE);
         calling.setVisibility(View.GONE);
         attend.setVisibility(View.VISIBLE);
         inCall.setVisibility(View.VISIBLE);
@@ -199,7 +229,7 @@ public class CallActivity extends AppCompatActivity {
         if (sharedPref.getString("ring", "").equals("") && r != null) {
             r.stop();
         }
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, FragmentHome.class));
         finish();
     }
 
@@ -210,7 +240,16 @@ public class CallActivity extends AppCompatActivity {
             mp.stop();
             mp.release();
             audioResume(length);
-            imageView.setImageResource(R.drawable.speaker);
+
+            switch (selectSreen.idlayout)
+            {
+                case 0:
+                    imageView.setImageResource(R.drawable.speaker);
+                    break;
+                case 3 :
+                    imageView.setImageResource(R.drawable.ic_baseline_volume_up_240123);
+                    break;
+            }
             check = Boolean.FALSE;
             return;
         }
@@ -219,7 +258,16 @@ public class CallActivity extends AppCompatActivity {
         mp.stop();
         mp.release();
         audioResume(length);
-        imageView.setImageResource(R.drawable.speaker2);
+        switch (selectSreen.idlayout)
+        {
+            case 0:
+                imageView.setImageResource(R.drawable.speaker2);
+                break;
+            case 3:
+                imageView.setImageResource(R.drawable.ic_baseline_volume_up_24);
+                break;
+        }
+
         check = Boolean.TRUE;
     }
 
@@ -284,7 +332,7 @@ public class CallActivity extends AppCompatActivity {
         String name = sharedPref.getString("name", "");
         String phone = sharedPref.getString("number", "");
         String image = sharedPref.getString("image", "");
-
+        Log.e("TAG", "setCaller: "+image );
         nameText.setText(name);
         phoneText.setText(phone);
         int obj = -1;
@@ -346,7 +394,11 @@ public class CallActivity extends AppCompatActivity {
 //                callerImg.setImageResource(R.drawable.gallery_btn_4);
 //                return;
 //            default:
-                callerImg.setImageDrawable(Drawable.createFromPath(image));
+             //   callerImg.setImageBitmap(TabViewDataSingleton.getImg());
+        Glide.with(this)
+                .load(TabViewDataSingleton.getImg())
+                .asBitmap()
+                .into(callerImg) ;
         //}
     }
 
@@ -385,14 +437,248 @@ public class CallActivity extends AppCompatActivity {
     public void reciveCall(View view) {
         answer();
     }
-
     public void rejectCall(View view) {
         decline();
     }
 
     public void endCall(View view) {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, FragmentHome.class));
         //showInterstitial();
         finish();
+    }
+
+
+    public void OnClickcalende(View view) {
+        // boolean checkCalender = true ;
+        if (checkCalender) {
+            switch (selectSreen.idlayout)
+            {
+                case 0 :
+                    calenda.setImageResource(R.drawable.ic_baseline_perm_contact_calendar_24);
+                    break;
+                case 1 :
+                    calenda.setImageResource(R.drawable.ic_baseline_perm_contact_calendar_24);
+                    break;
+                case 2 :
+                    calenda.setImageResource(R.drawable.ic_baseline_voicemail_24444);
+                    break ;
+                case 3 :
+                    calenda.setImageResource(R.drawable.addcall);
+                    break ;
+            }
+            checkCalender = Boolean.FALSE;
+            return;
+        }
+        switch (selectSreen.idlayout)
+        {
+            case 0 :
+                calenda.setImageResource(R.drawable.ic_perm_contact_calendar_black_24dp);
+                break ;
+            case 1 :
+                calenda.setImageResource(R.drawable.ic_perm_contact_calendar_black_24dp);
+                break ;
+            case 2 :
+                calenda.setImageResource(R.drawable.ic_baseline_voicemail_24);
+                break ;
+            case 3 :
+                calenda.setImageResource(R.drawable.addcallll);
+                break ;
+        }
+
+        checkCalender = Boolean.TRUE;
+    }
+
+    public void OnClickNote(View view) {
+        if (checkNote) {
+            switch (selectSreen.idlayout)
+            {
+                case 0:
+                    note.setImageResource(R.drawable.note);
+                    break ;
+                case 1 :
+                    note.setImageResource(R.drawable.note);
+                    break ;
+                case 2:
+                    note.setImageResource(R.drawable.ic_baseline_bluetooth_24444);
+                    break ;
+                case 3:
+                    note.setImageResource(R.drawable.ic_baseline_bluetooth_24);
+                    break ;
+            }
+
+            checkNote = Boolean.FALSE;
+            return;
+        }
+        switch (selectSreen.idlayout)
+        {
+            case 0:
+                note.setImageResource(R.drawable.ic_note_add_black_24dp);
+                break ;
+            case 1 :
+                note.setImageResource(R.drawable.ic_note_add_black_24dp);
+                break ;
+            case 2:
+                note.setImageResource(R.drawable.ic_baseline_bluetooth_24);
+                break ;
+            case 3:
+                note.setImageResource(R.drawable.ic_baseline_bluetooth_24444);
+                break ;
+        }
+
+        checkNote = Boolean.TRUE;
+    }
+
+    public void OnClickAddcal(View view) {
+        if (checkAddcall) {
+            switch (selectSreen.idlayout)
+            {
+                case 0 :
+                    addcall.setImageResource(R.drawable.addcall);
+                    break ;
+                case 1 :
+                    addcall.setImageResource(R.drawable.addcall);
+                    break ;
+                case 2 :
+                    addcall.setImageResource(R.drawable.ic_baseline_volume_up_24);
+                    break ;
+                case 3 :
+                    addcall.setImageResource(R.drawable.ic_baseline_volume_up_240123);
+                    break ;
+            }
+            checkAddcall = Boolean.FALSE;
+            return;
+
+        }
+        switch (selectSreen.idlayout) {
+            case 0:
+                addcall.setImageResource(R.drawable.addcallll);
+                break ;
+            case 1:
+                addcall.setImageResource(R.drawable.addcallll);
+                break ;
+            case 2:
+                addcall.setImageResource(R.drawable.ic_baseline_volume_up_240123);
+                break ;
+            case 3:
+                addcall.setImageResource(R.drawable.ic_baseline_volume_up_24);
+                return;
+        }
+        checkAddcall = Boolean.TRUE;
+    }
+
+    public void OnClickContacs(View view) {
+        if (checkPerson) {
+            switch (selectSreen.idlayout)
+            {
+                case 0:
+                    person.setImageResource(R.drawable.ic_baseline_person_pin_24);
+                    break;
+                case 1 :
+                    person.setImageResource(R.drawable.ic_baseline_person_pin_24);
+                    break;
+                case 2:
+                    person.setImageResource(R.drawable.ic_baseline_dialpad_2444);
+                    break;
+                case 3 :
+                    person.setImageResource(R.drawable.ic_mic_black_24dp);
+                    break;
+            }
+
+            checkPerson = Boolean.FALSE;
+            return;
+        }
+        switch (selectSreen.idlayout)
+        {
+            case 0:
+                person.setImageResource(R.drawable.ic_baseline_person_pin_24444);
+                break;
+            case 1 :
+                person.setImageResource(R.drawable.ic_baseline_person_pin_24444);
+                break;
+            case 2:
+                person.setImageResource(R.drawable.ic_baseline_dialpad_24);
+                break;
+            case 3 :
+                person.setImageResource(R.drawable.ic_baseline_mic_none_244444);
+                break;
+        }
+
+        checkPerson = Boolean.TRUE;
+    }
+
+    public void OnClickMic(View view) {
+        if (checkMute) {
+            switch (selectSreen.idlayout)
+            {
+                case 0 :
+                    mute.setImageResource(R.drawable.ic_baseline_mic_24);
+                    break;
+                case 1 :
+                    mute.setImageResource(R.drawable.ic_baseline_mic_24);
+                    break;
+                case 2:
+                    mute.setImageResource(R.drawable.ic_baseline_mic_24);
+                    break;
+                case 3 :
+                    mute.setImageResource(R.drawable.ic_baseline_dialpad_24);
+                    break;
+            }
+            checkMute = Boolean.FALSE;
+            return;
+        }
+        switch (selectSreen.idlayout)
+        {
+            case 0 :
+                mute.setImageResource(R.drawable.ic_mic_black_24dp);
+                break;
+            case 1 :
+                mute.setImageResource(R.drawable.ic_mic_black_24dp);
+                break;
+            case 2 :
+                mute.setImageResource(R.drawable.ic_mic_black_24dp);
+                break;
+            case 3 :
+                mute.setImageResource(R.drawable.ic_baseline_dialpad_2444);
+                break;
+        }
+        checkMute = Boolean.TRUE;
+    }
+    public  void OnClickHold(View view) {
+        if (check) {
+            switch (selectSreen.idlayout)
+            {
+                case 0 :
+                    hold.setImageResource(R.drawable.ic_baseline_call_24);
+                    break;
+                case 1:
+                    hold.setImageResource(R.drawable.ic_baseline_call_24);
+                    break;
+                case  2 :
+                    hold.setImageResource(R.drawable.ic_baseline_call_24);
+                    break;
+                case 3 :
+                    hold.setImageResource(R.drawable.call);
+                    break;
+            }
+            check = Boolean.FALSE;
+            return;
+        }
+        switch (selectSreen.idlayout)
+        {
+            case 0 :
+                hold.setImageResource(R.drawable.call);
+                break;
+            case 1:
+                hold.setImageResource(R.drawable.call);
+                break;
+            case  2 :
+                hold.setImageResource(R.drawable.call);
+                break;
+            case  3 :
+                hold.setImageResource(R.drawable.ic_baseline_call_24);
+                break;
+        }
+
+        check = Boolean.TRUE;
     }
 }
