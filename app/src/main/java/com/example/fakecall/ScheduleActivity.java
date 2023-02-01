@@ -1,16 +1,21 @@
 package com.example.fakecall;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 //import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fakecall.Fagment.TabViewDataSingleton;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
@@ -19,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ScheduleActivity extends AppCompatActivity {
     private PendingIntent alarmIntent;
     private AlarmManager alarmMgr;
+    SharedPreferences sharedPref;
    // private AdView mAdView;
    // AdRequest adRequestint;
 
@@ -30,7 +36,8 @@ public class ScheduleActivity extends AppCompatActivity {
 //        AdRequest adRequest = new AdRequest.Builder().addTestDevice("0224C93FFD644350DCD7F3D7557C6A5C").build();
 //        mAdView.loadAd(adRequest);
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), 0);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), PendingIntent.FLAG_IMMUTABLE);
+        sharedPref = getSharedPreferences("file", 0);
     }
 
     public void onButtonClick(View view) {
@@ -65,19 +72,27 @@ public class ScheduleActivity extends AppCompatActivity {
                 time = "30 Min";
                 break;
         }
-//        if()
-//        {
-//
-//        }
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ((long) (timer * 1000)), alarmIntent);
-        Toast.makeText(this, "Call timer Set to: " + time, Toast.LENGTH_LONG).show();
+        //
+        Toast.makeText(this, " đã được chạy ", Toast.LENGTH_SHORT).show();
+        ImageView abc =  null;
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ((long) (timer * 1000)), alarmIntent);
+//        }
+        if (alarmIntent!= null&&alarmMgr!= null)
+        {
+            String name = sharedPref.getString("name", "");
+            String phone = sharedPref.getString("number", "");
+            FragmentHome.saveData(getBaseContext() ,name , phone, TabViewDataSingleton.getImg() );
+        }
+            Toast.makeText(this, "Call timer Set to: " + time, Toast.LENGTH_LONG).show();
         finish();
     }
-
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(getApplication(), FragmentMain.class));
-        Toast.makeText(this, "Đã thêm 1 bản mới", Toast.LENGTH_SHORT).show();
         finish();
     }
+
 }

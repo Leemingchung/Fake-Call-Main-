@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class CustomDialog extends Dialog implements OnClickListener {
     private Button add;
@@ -18,13 +19,11 @@ public class CustomDialog extends Dialog implements OnClickListener {
     private Drawable img;
     private Button remove;
     SharedPreferences sharedPref;
-
     CustomDialog(Context context, int id) {
         super(context);
         this.c = context;
         this.id = id;
     }
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(1);
@@ -35,6 +34,10 @@ public class CustomDialog extends Dialog implements OnClickListener {
         remove = (Button) findViewById(R.id.btn_remove);
         choose = (Button) findViewById(R.id.btn_choose);
         String path;
+        if (id==0)
+        {
+            choose.setVisibility(View.GONE);
+        }
         if (id == 1) {
             path = sharedPref.getString("audio", "");
             if (path.equals("")) {
@@ -69,12 +72,10 @@ public class CustomDialog extends Dialog implements OnClickListener {
         remove.setOnClickListener(this);
         choose.setOnClickListener(this);
     }
-
     public void onBackPressed() {
         super.onBackPressed();
         buttonClick = -1;
     }
-
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add :

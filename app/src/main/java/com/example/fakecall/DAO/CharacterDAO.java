@@ -69,7 +69,6 @@ public class CharacterDAO {
         values.put("name","Bùi văn chung ");
         values.put("numberPhone" ,"0355789456");
         values.put("imageView" ,CovertIMG.getBytes(bitmap1));
-         //byte[] tmpTest  = CovertIMG.getBytes(bitmap1);
         long kq = sqLiteDatabase.insert("character", null , values) ;
 
         return kq ;
@@ -96,6 +95,11 @@ public class CharacterDAO {
     public ArrayList<ModelCharacter> getAll(){
         String sql=" SELECT * FROM character ";
         return getdata(sql);
+    }
+    public int delete ( )
+    {
+        SQLiteDatabase sqLiteDatabase = db.getWritableDatabase();
+        return sqLiteDatabase.delete("character" ,null  , null);
     }
     public int  getsdt( String sdt){
         String sql=" SELECT * FROM character WHERE numberPhone =? ";

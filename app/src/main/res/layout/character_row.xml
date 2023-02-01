@@ -4,9 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginBottom="3dp"
-    android:background="#A83434"
-    android:orientation="horizontal">
 
+    android:orientation="horizontal">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="#A83434"
+        android:id="@+id/carview"
+        >
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal"
+      >
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/img_row"
         android:layout_width="120dp"
@@ -53,4 +65,6 @@
             android:textColor="#ffffffff"
             android:textSize="15dp" />
     </LinearLayout>
+  </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

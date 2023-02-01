@@ -30,7 +30,7 @@
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:layout_marginTop="15dp"
                 android:id="@+id/caller_image"
-                android:background="#FFFFFF"
+                android:background="#D3CCCC"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp"
@@ -256,13 +256,13 @@
                 android:text="Schedule"
                 android:backgroundTint="#E91E1E"
                 android:textColor="#ffffffff" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/test"
-                android:text="testsave "
+<!--            <Button-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/test"-->
+<!--                android:text="testsave "-->
 
-                />
+<!--                />-->
 
 <!--            <Button-->
 <!--                android:id="@+id/button3"-->

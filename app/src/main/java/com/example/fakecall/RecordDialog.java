@@ -86,38 +86,13 @@ public class RecordDialog extends Dialog implements OnClickListener  {
     }
 
     private void startRecording() {
-        // write on SD card file data from the text box
-//        File dir = new File(c.getFilesDir(), "mydir");
-//        if(!dir.exists()){
-//            dir.mkdir();
-//        }
-//
-//        try {
-//            File gpxfile = new File(dir, sFileName);
-//            FileWriter writer = new FileWriter(gpxfile);
-//            writer.append(sBody);
-//            writer.flush();
-//            writer.close();
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download";
-
-        Log.d("Files", "Path: " + path);
         File f = new File(path);
         File file[] = f.listFiles();
-        Log.d("Files", "Size: "+ file.length);
-        for (int i=0; i < file.length; i++)
-        {
-            Log.d("Files", "FileName:" + file[i].getName());
-        }
-
         recordStarted = true;
         mRecorder = new MediaRecorder();
         File audioFolder = new File(Environment.getExternalStorageDirectory() + "/Download",
                 "newfolder");
-        Toast.makeText(c, " new folder  " + audioFolder,  Toast.LENGTH_SHORT).show();
         if (!audioFolder.exists()) {
             boolean success = audioFolder.mkdir();
             if (success) {
@@ -218,7 +193,7 @@ public class RecordDialog extends Dialog implements OnClickListener  {
                     onPlay(playStarted);
                 }
                 onRecord(recordStarted);
-               // play.setClickable(true);
+                //play.setClickable(true);
                 return;
 //            case R.id.btn_play :
 //                if (recordStarted) {
@@ -320,8 +295,4 @@ public class RecordDialog extends Dialog implements OnClickListener  {
             Toast.makeText(c, "falid e9"+e9.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
 }

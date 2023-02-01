@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.fakecall.Adapter.GridAdapter;
 
@@ -16,7 +18,7 @@ public class SelectSreen extends AppCompatActivity {
     List<Model> list = new ArrayList<>() ;
     GridAdapter gridAdapter ;
     GridView gridView ;
-    static int  idlayout ;
+    public static int  idlayout ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +30,16 @@ public class SelectSreen extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                idlayout= i ;
+                idlayout= i;
+                Toast.makeText(SelectSreen.this, " màn hình thứ " + i, Toast.LENGTH_SHORT).show();
             }
         });
     }
     public void addLiss()
     {
-        list.add(new Model(R.drawable.add_ , "opppo")) ;
+        list.add(new Model(R.drawable.screenshot3 , "opppo")) ;
         list.add(new Model(R.drawable.bg , "samsung")) ;
-        list.add(new Model(R.drawable.background , "iphone")) ;
-        list.add(new Model(R.drawable.gallery_btn_2, "vivo")) ;
+        list.add(new Model(R.drawable.screenshot2 , "iphone")) ;
+        list.add(new Model(R.drawable.screenshot1, "vivo")) ;
     }
 }

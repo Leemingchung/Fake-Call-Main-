@@ -1,6 +1,7 @@
 package com.example.fakecall.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,16 @@ import androidx.annotation.NonNull;
 
 import com.example.fakecall.Model;
 import com.example.fakecall.R;
+import com.example.fakecall.SelectSreen;
 
 import java.util.List;
 
 public class GridAdapter extends BaseAdapter {
+    private  int selectposition = -1 ;
     Context context ;
     List<Model> list;
+     Boolean check  = true;
+     SelectSreen selectSreen ;
     int idlayout ;
     public GridAdapter(Context context, List<Model> list) {
         this.context = context;
@@ -39,7 +44,6 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
         return 0;
     }
 
@@ -55,18 +59,18 @@ public class GridAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.item, null);
             viewHolder.textView = view.findViewById(R.id.nameItem);
             viewHolder.imageView = view.findViewById(R.id.imageItem);
+            viewHolder.done = view.findViewById(R.id.done);
             view.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) view.getTag();
         }
         viewHolder.textView.setText(model.getName());
         viewHolder.imageView.setImageResource(model.getImageView());
-        //
-
         return  view ;
     }
-    class ViewHolder{
+    public class ViewHolder{
         TextView textView;
         ImageView imageView;
+        ImageView done ;
     }
 }

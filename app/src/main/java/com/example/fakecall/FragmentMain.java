@@ -3,6 +3,7 @@ package com.example.fakecall;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
@@ -12,9 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.fakecall.Adapter.ViewPageAdapter;
+import com.example.fakecall.Fagment.TabViewDataSingleton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -23,7 +26,6 @@ public class FragmentMain extends AppCompatActivity {
     private ViewPager2 viewPager ;
     static Toolbar mtoolbar ;
     private ViewPageAdapter pageAdapter  ;
-    public static int idvip ;
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,12 @@ public class FragmentMain extends AppCompatActivity {
         viewPager.setAdapter(pageAdapter);
         mtoolbar =  findViewById(R.id.toolbar) ;
         mtoolbar.setTitle("Fake Call");
-
-        tablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+//                if(tab.getPosition()==0)
+//                {
+//                }
                 tab.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             }
 
@@ -49,15 +53,13 @@ public class FragmentMain extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
-        setSupportActionBar(mtoolbar);
+       // setSupportActionBar(mtoolbar);
         new TabLayoutMediator(tablayout, viewPager, (tab, position) -> {
 //            MenuItem item = (MenuItem) findViewById(R.id.delete);
 //            item.setVisible(false);
             this.invalidateOptionsMenu() ;
-            Log.e("Tg5" ," "+position) ;
             switch (position)
             {
                 case 0 :
@@ -91,4 +93,6 @@ public class FragmentMain extends AppCompatActivity {
         }
         return  true ;
     }
+
+
 }
