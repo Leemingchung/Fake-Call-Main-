@@ -2,6 +2,7 @@ package com.example.fakecall;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
 import android.provider.MediaStore.Images;
 //import android.support.v4.content.CursorLoader;
@@ -69,44 +71,44 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class FragmentHome extends Fragment implements  IOnBackPressed{
-    private static final int REQUEST_READ_PERMISSION = 786;
-    private static final int REQUEST_WRITE_PERMISSION = 786;
+    private static final int REQUEST_READ_PERMISSION = 766;
+    private static final int REQUEST_WRITE_PERMISSION = 766;
     int ON_CHAR_CLICK = 2;
     int ON_CLICK;
     int ON_DIALOG_CLICK = 0;
     int ON_MORE_CLICK = 3;
     int ON_SHADLE_CLICK = 1;
-    ImageView callerImage;
+    static ImageView callerImage;
     CustomDialog customDialog;
     int dialogId;
-    EditText nameEditText;
-    EditText phoneEditText;
+    static EditText nameEditText;
+    static EditText phoneEditText;
     Button call , more ;
     CircularImageView circularImageView ;
     TextView ringtoneClick ,Phonebook, soundClick, bookPhone  ;
     int picker;
-    CharacterDAO characterDAO ;
-    ArrayList<ModelCharacter> list  ;
+    static CharacterDAO characterDAO ;
+    static ArrayList<ModelCharacter> list  ;
     SharedPreferences sharedPref;
     private static final int CONTACT_PERMISSION_CODE = 8;
     private static final int CONTACT_PICK_CODE = 9;
     private static final int  RESULT_OKE = -1;
-    CharAdapter adapter ;
-    CharacterActivity characterActivity ;
+    static CharAdapter adapter ;
+    static CharacterActivity characterActivity ;
 //    private AdView mAdView;
 //    AdRequest adRequestint;
+    static ImageView img3 ;
     boolean isFirstRun  ;
+    //
     public void onResume() {
         super.onResume();
-//        nameEditText.setText(TabViewDataSingleton.getName());
-//        phoneEditText.setText(TabViewDataSingleton.getSdt());
-        setEdt( TabViewDataSingleton.getSdt() , TabViewDataSingleton.getName());
-             if(TabViewDataSingleton.getImg()!= null) {
-            Glide.with(getContext())
+        nameEditText.setText(TabViewDataSingleton.getName());
+        phoneEditText.setText(TabViewDataSingleton.getSdt());
+              Glide.with(getContext())
                     .load(TabViewDataSingleton.getImg())
                     .asBitmap()
                     .into(callerImage) ;
-        }
+
         setCaller();
     }
     void setEdt(String number , String name)
@@ -115,57 +117,12 @@ public class FragmentHome extends Fragment implements  IOnBackPressed{
         phoneEditText.setText(number);
     }
     void setCaller() {
-        String name = sharedPref.getString("name", "");
-        String phone = sharedPref.getString("number", "");
+        String name = sharedPref.getString("name", nameEditText.getText().toString());
+        String phone = sharedPref.getString("number", phoneEditText.getText().toString());
         String image = sharedPref.getString("image", "");
         nameEditText.setText(name);
         phoneEditText.setText(phone);
-//        Glide.with(getContext())
-//                .load(image)
-//                .asBitmap()
-//                .into(callerImage) ;
-       // Log.e("img ",""+image) ;
-        //callerImage.setImageBitmap(CovertIMG.getImage());
-        //callerImage.setImageBitmap(CovertIMG.getImage(image));
-//        int obj = -1;
-//        switch (image.hashCode()) {
-//            case 0:
-//                if (image.equals("")) {
-//                    obj = 0;
-//                    break;
-//                }
-//                break;
-//            case 48:
-//                if (image.equals("0")) {
-//                    obj = 1;
-//                    break;
-//                }
-//                break;
-//
-//        switch (obj) {
-//            case 0:
-//                callerImage.setImageResource(R.drawable.person_add_grey);
-//                return;
-//            case 1:
-//                callerImage.setImageResource(R.drawable.gallery_btn_0);
-//                return;
-//            case 2:
-//                callerImage.setImageResource(R.drawable.gallery_btn_1);
-//                return;
-//            case 3:
-//                callerImage.setImageResource(R.drawable.gallery_btn_2);
-//                return;
-//            case 4:
-//                callerImage.setImageResource(R.drawable.gallery_btn_3);
-//                return;
-//            case 5:
-//                callerImage.setImageResource(R.drawable.gallery_btn_4);
-//                return;
-//            default:
-            //callerImage.setImageDrawable(Drawable.createFromPath(image));
-              //  return;
-               // Glide.with(con).load(image).into(callerImage);
-       // }
+
     }
 
     public void rateUs() {
@@ -216,8 +173,6 @@ public class FragmentHome extends Fragment implements  IOnBackPressed{
         }
         return alreadyRated;
     }
-
-
     @Override
     public void onStart() {
 
@@ -242,13 +197,24 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         nameEditText =  view.findViewById(R.id.caller_name);
         phoneEditText = view.findViewById(R.id.caller_number);
         callerImage = view.findViewById(R.id.caller_image);
-        Button testSave = view.findViewById(R.id.test) ;
+        loadEditext(TabViewDataSingleton.getName() , TabViewDataSingleton.getSdt());
 
+        if (callerImage== null)
+        {
+            Toast.makeText(getContext(), " nó đang trống ", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            phoneEditText.setText(TabViewDataSingleton.getSdt());
+            Glide.with(getContext())
+                    .load(R.drawable.person)
+                    .asBitmap()
+                    .into(callerImage) ;
+        }
     SQL sql = new SQL(getContext()) ;
     SQLiteDatabase readableDatabase = sql.getReadableDatabase();
     readableDatabase.close();
     SharedPreferences sharedpref = PreferenceManager.getDefaultSharedPreferences(getContext());
-
+    //
     isFirstRun = sharedpref.getBoolean("FIRSTRUN", true);
 
     if (isFirstRun)
@@ -259,59 +225,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         editor.commit();
         Insert();
     }
- //   characterDAO.in
-    //test
-    testSave .setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            ModelCharacter character = new ModelCharacter() ;
-
-            character.setName(nameEditText.getText().toString());
-            character.setSdt(phoneEditText.getText().toString());
-
-            character.setHinhanh(ImageView_To_Byte(callerImage)) ;
-            String sdt = phoneEditText.getText().toString();
-            //
-            characterDAO = new CharacterDAO(getContext()) ;
-
-
-             if(characterDAO.getsdt(sdt)==-1)
-            {
-                Toast.makeText(getContext(), " chưa có sdt này " + characterDAO.getsdt(sdt), Toast.LENGTH_SHORT).show();
-                long kq = characterDAO.inserCharacter(character);
-                if (kq>0)
-                {
-                    adapter = new CharAdapter(getContext() , list) ;
-                    list = new ArrayList<>() ;
-                    list.addAll(characterDAO.getAll()) ;
-                    list.clear();
-                    list.addAll(characterDAO.getAll()) ;
-                    adapter.notifyDataSetChanged();
-                    characterActivity.Reset();
-                    Toast.makeText(getContext(), " thêm thàng công ", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-            else if(characterDAO.getsdt(sdt)>0)
-            {
-                Toast.makeText(getContext(), " đã có sdt này ", Toast.LENGTH_SHORT).show();
-                character.setName(nameEditText.getText().toString());
-               // character.setHinhanh(ImageView_To_Byte(callerImage));
-                adapter = new CharAdapter(getContext() , list) ;
-                characterDAO.update(character) ;
-                list = new ArrayList<>() ;
-                list.clear();
-                list.addAll(characterDAO.getAll()) ;
-                adapter.notifyDataSetChanged();
-                characterActivity.Reset();
-                return;
-            }
-            else {
-                Toast.makeText(getContext(), " Thêm thất bại ", Toast.LENGTH_SHORT).show();
-            }
-        }
-    });
-
         circularImageView  = view.findViewById(R.id.caller_image) ;
         circularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,7 +253,7 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
 //        });
         //
         ringtoneClick = view .findViewById(R.id.textView_ringtone) ;
-         ringtoneClick.setOnClickListener(new View.OnClickListener() {
+        ringtoneClick.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
                  final CustomDialog cdd = new CustomDialog(getContext(), 2);
@@ -460,6 +373,57 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         setCaller();
     return view;
     }
+    public static void saveData(Context context , String name , String number , byte[] bytes)
+    {
+        ModelCharacter character = new ModelCharacter() ;
+
+        character.setName(nameEditText.getText().toString());
+        String sdt =number;
+        character.setName(name);
+        character.setSdt(number);
+        try {
+            character.setHinhanh(bytes) ;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        characterDAO = new CharacterDAO(context) ;
+        if(characterDAO.getsdt(sdt)==-1)
+        {
+            long kq = characterDAO.inserCharacter(character);
+            if (kq>0)
+            {
+                adapter = new CharAdapter(context , list) ;
+                list = new ArrayList<>() ;
+                list.addAll(characterDAO.getAll()) ;
+                list.clear();
+                list.addAll(characterDAO.getAll()) ;
+                adapter.notifyDataSetChanged();
+                characterActivity.Reset();
+            }
+            return;
+        }
+        else if(characterDAO.getsdt(sdt)>0)
+        {
+            character.setName(name);
+            try {
+                character.setHinhanh(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            adapter = new CharAdapter(context , list) ;
+            characterDAO.update(character) ;
+            list = new ArrayList<>() ;
+            list.clear();
+            list.addAll(characterDAO.getAll()) ;
+            adapter.notifyDataSetChanged();
+            characterActivity.Reset();
+            return;
+        }
+        else {
+            Toast.makeText(context, " Thêm thất bại ", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void saveName(String name) {
         Editor editor = sharedPref.edit();
         editor.putString("name", name);
@@ -483,16 +447,17 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         this.dialogId = dialogId;
     }
 
-    public void moreAppsClick(View v) {
-        ON_CLICK = ON_MORE_CLICK;
-        Intent intent = new Intent("android.intent.action.VIEW");
-        intent.setData(Uri.parse("https://play.google.com/store/apps/dev?id="+getResources().getString(R.string.developer_id)));
-        startActivity(intent);
-    }
+//    public void moreAppsClick(View v) {
+//        ON_CLICK = ON_MORE_CLICK;
+//        Intent intent = new Intent("android.intent.action.VIEW");
+//        intent.setData(Uri.parse("https://play.google.com/store/apps/dev?id="+getResources().getString(R.string.developer_id)));
+//        startActivity(intent);
+//    }
 
     public void onDialogDismiss(int button, int id) {
         Editor editor;
         if (id == 1) {
+            Toast.makeText(getContext(), "button :   "+ button, Toast.LENGTH_SHORT).show();
             switch (button) {
                 case 0:
                     picker = 0;
@@ -502,12 +467,25 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
                     editor = sharedPref.edit();
                     editor.putString("audio", "");
                     editor.apply();
+
                     if (!sharedPref.getString("audio", "").equals("")) {
                         return;
                     }
                     return;
                 case 2:
                     picker = 3;
+                    try {
+                        RecordDialog recordDialog = new RecordDialog(getContext());
+                        recordDialog.show();
+                        recordDialog.setOnDismissListener(new OnDismissListener() {
+                            public void onDismiss(DialogInterface dialog) {
+                                if (!sharedPref.getString("audio", "").equals("")) {
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+            }
                     requestPermission();
                     return;
                 default:
@@ -523,11 +501,10 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
                     callerImage.setImageResource(R.drawable.person);
                     return;
                 case 2:
-                    //startActivityForResult(new Intent( getActivity(), CharacterActivity.class), 1);
+                    startActivityForResult(new Intent( getActivity(), CharacterActivity.class), 1);
                     TabLayout.Tab tabLayout = FragmentMain.tablayout.getTabAt(1) ;
                     tabLayout.select();
                     return;
-                default:
             }
         } else if (id == 2) {
             editor = sharedPref.edit();
@@ -563,13 +540,13 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
        else return;
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(getContext(), " "+ resultCode, Toast.LENGTH_SHORT).show();
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Toast.makeText(getContext(), " "+ resultCode, Toast.LENGTH_SHORT).show();
         if(resultCode==-1)
         {
             switch (requestCode) {
                 case CONTACT_PICK_CODE:
-                    Toast.makeText (getContext(), "retommmmmm"+requestCode, Toast.LENGTH_SHORT).show ();
+                    //Toast.makeText (getContext(), "retommmmmm"+requestCode, Toast.LENGTH_SHORT).show ();
                     contactPicked (data);
                     break;
             }
@@ -585,17 +562,18 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
                 String img = data.getStringExtra("img");
                 saveName(name);
                 saveImg(img);
+
                 savePhone(number);
             }
         } else if (requestCode == 2) {
-//            if (resultCode == -1) {
-//                String audio = getRealPathFromURI(data.getData());
-//                Editor editor = sharedPref.edit();
-//                editor.putString("audio", audio);
-//                editor.apply();
-//                if (!sharedPref.getString("audio", "").equals("")) {
-//                }
-//            }
+            if (resultCode == -1) {
+                String audio = getRealPathFromURI(data.getData());
+                Editor editor = sharedPref.edit();
+                editor.putString("audio", audio);
+                editor.apply();
+                if (!sharedPref.getString("audio", "").equals("")) {
+                }
+            }
         } else if (requestCode == 3) {
             if (resultCode == -1) {
                 performCrop(data.getData());
@@ -605,51 +583,82 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
                 String ring = getRealPathFromURI(data.getData());
                 Editor editor = sharedPref.edit();
                 editor.putString("ring", ring);
+                Toast.makeText(getContext(), " đã được chọn  ", Toast.LENGTH_SHORT).show();
                 editor.apply();
+                //
+
+                final CustomDialog cdd = new CustomDialog(getContext(), 2);
+                setDialog(cdd, 2);
+                ON_CLICK = ON_DIALOG_CLICK;
+                cdd.dismiss();
+                cdd.setOnDismissListener(new OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        onDialogDismiss(cdd.buttonClick, 2);
+                    }
+                });
             }
         } else if (requestCode == 5 && resultCode == -1) {
             saveImg(Environment.getExternalStorageDirectory() + "/Image-Caller.jpg");
         }
         //
-        Log.e("TAG", "resultCode:  "+resultCode+"RESULT_OKE:"+RESULT_OKE +"requestCode  : " +requestCode);
         if (resultCode== RESULT_OKE&& requestCode> 0)
         {
             try {
                 InputStream inputStream  = getContext().getContentResolver().openInputStream(data.getData()) ;
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream) ;
-                callerImage.setImageBitmap(bitmap);
+                //callerImage.setImageBitmap(bitmap);
+//                Glide.with(getContext())
+//                        .load(bitmap)
+//                        .asBitmap()
+//                        .into(callerImage) ;
+                if (bitmap== null)
+                {
+                    return;
+                }
+                else {
+                    TabViewDataSingleton.setImg(CovertIMG.getBytes(bitmap));
+                }
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
-        //
+
 
 
     }
-
     private String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = new CursorLoader(getContext(), contentUri, new String[]{"_data"}, null, null, null).loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow("_data");
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Toast.makeText(getContext(), "" + requestCode +  " : " + permissions + " : " +  grantResults, Toast.LENGTH_SHORT).show();
+        Log.e("TAG", "onRequestPermissionsResult: "  + requestCode +  " : " + permissions + " : " +  grantResults);
+        //Log.e("TAG", "granResults: " + grantResults.length +"grantResults: "+grantResults[0]+"PackageManager : "+ PackageManager.PERMISSION_GRANTED);
         if (requestCode == REQUEST_READ_PERMISSION && grantResults[0] == 0) {
             pick();
         }
-        if (requestCode == 766 && grantResults[0] == 0) {
-            RecordDialog recordDialog = new RecordDialog(getContext());
-            recordDialog.show();
-            recordDialog.setOnDismissListener(new OnDismissListener() {
-                public void onDismiss(DialogInterface dialog) {
-                    if (!sharedPref.getString("audio", "").equals("")) {
+        Log.e("TAG", "grantResults: "+ grantResults[0] +"requestCode"+requestCode );
+        if (requestCode == 786 && grantResults[0] == 0) {
+            try {
+                RecordDialog recordDialog = new RecordDialog(getContext());
+                recordDialog.show();
+                recordDialog.setOnDismissListener(new OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        if (!sharedPref.getString("audio", "").equals("")) {
+                        }
                     }
-                }
-            });
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        //Toast.makeText(getContext(), "Permission to Access Storage:" + isExternalStorageWritable(), Toast.LENGTH_LONG).show();
         if (requestCode == CONTACT_PERMISSION_CODE)
+
         if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
             pickContactInten();
@@ -657,9 +666,8 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
         else {
             Toast.makeText(getContext(), "Permisson denied", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getContext(), "Permission to Access Storage:" + isExternalStorageWritable(), Toast.LENGTH_LONG).show();
+      //  Toast.makeText(getContext(), "Permission to Access Storage1:" + isExternalStorageWritable(), Toast.LENGTH_LONG).show();
     }
-
     public boolean isExternalStorageWritable() {
         if ("mounted".equals(Environment.getExternalStorageState())) {
             return true;
@@ -670,7 +678,8 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
     void pick()
     {
         if (picker == 0) {
-            pickAudio();
+            //pickAudio();
+            pic1();
         } else if (picker == 1) {
             pickImage();
         } else if (picker == 2) {
@@ -681,29 +690,70 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
     }
 
     void pickRing() {
-        Intent intent = new Intent("android.intent.action.PICK", Media.EXTERNAL_CONTENT_URI);
+        //Intent intent = new Intent("android.intent.action.PICK", Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK , Media.EXTERNAL_CONTENT_URI );
+        Log.e("ring", "pickRing: " + intent.resolveActivity( getActivity(). getPackageManager()));
         if (intent.resolveActivity( getActivity(). getPackageManager()) != null) {
-            startActivityForResult(intent, 4);
-        } else {
+            try {
+                    startActivityForResult(intent, 4);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                startActivityForResult(intent, 99);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Toast.makeText( getActivity(), "No app found!", Toast.LENGTH_LONG).show();
-
         }
     }
 
+    void pic1()
+    {
+        Intent intent = new Intent( Intent.ACTION_OPEN_DOCUMENT) ;
+        intent.addCategory(Intent.CATEGORY_OPENABLE) ;
+        intent.setType("audio/*") ;
+        startActivityForResult(intent , 99);
+    }
+
     void pickAudio() {
-        Intent intent = new Intent("android.intent.action.PICK", Media.EXTERNAL_CONTENT_URI);
+        //Intent intent = new Intent("android.intent.action.PICK", Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity( getActivity(). getPackageManager()) != null) {
-            startActivityForResult(intent, 2);
-        } else {
-            Toast.makeText( getActivity(), "No app found!", Toast.LENGTH_LONG).show();
+            try {
+                Toast.makeText(getContext(), "trên ", Toast.LENGTH_SHORT).show();
+                startActivityForResult(intent,2 );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                Toast.makeText(getContext(), "dưới ", Toast.LENGTH_SHORT).show();
+                startActivityForResult(intent, 2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     void pickImage() {
         Intent intent = new Intent("android.intent.action.PICK", Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity( getActivity(). getPackageManager()) != null) {
-            startActivityForResult(intent, 3);
+            try {
+                startActivityForResult(intent, 3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } else {
+            try {
+                startActivityForResult(intent, 3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Toast.makeText( getActivity(), "No app found!", Toast.LENGTH_LONG).show();
         }
     }
@@ -731,7 +781,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
             }
         });
     }
-
     private void performCrop(Uri picUri) {
         try {
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
@@ -788,7 +837,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
     {
         String[] permission ={ Manifest.permission.READ_CONTACTS } ;
         ActivityCompat.requestPermissions(getActivity() , permission , CONTACT_PERMISSION_CODE);
-
     }
     private void pickContactInten()
     {
@@ -797,7 +845,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
     }
     private void contactPicked(Intent data) {
         Cursor cursor = null;
-
         try {
             String phoneNo = null;
             String phoneNamee = null ;
@@ -819,7 +866,6 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
                 int numberIdx = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 String cNumber = phones.getString(numberIdx);
                // phoneEditText.setText (cNumber);
-                Log.e("number", "" + cNumber);
                 TabViewDataSingleton.setSdt(cNumber);
             }
             int phoneName = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
@@ -836,8 +882,7 @@ public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c
             e.printStackTrace ();
         }
     }
-
-    public byte[] ImageView_To_Byte(ImageView h)
+    public static byte[] ImageView_To_Byte(ImageView h)
     {
          BitmapDrawable drawable = (BitmapDrawable) h.getDrawable() ;
          Bitmap bmp = drawable.getBitmap() ;

@@ -83,6 +83,7 @@ public class CharAdapter extends BaseAdapter {
                 TabViewDataSingleton.setImg(img);
                 TabLayout.Tab tabLayout = FragmentMain.tablayout.getTabAt(0) ;
                 tabLayout.select();
+
             }
         });
         return rowView;

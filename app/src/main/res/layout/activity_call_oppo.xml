@@ -138,7 +138,7 @@
                 app:cardCornerRadius="90dp"
                 >
                 <ImageView
-
+                    android:onClick="rejectCall"
                     android:id="@+id/gif_reject"
                     android:layout_margin="20dp"
                     android:layout_width="match_parent"

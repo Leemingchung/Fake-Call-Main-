@@ -29,9 +29,6 @@ import java.util.ArrayList;
 
 public class CharacterActivity extends Fragment {
     static final /* synthetic */ boolean $assertionsDisabled = (!CharacterActivity.class.desiredAssertionStatus());
-    //    public static int[] prgmImages = new int[]{R.drawable.gallery_btn_0, R.drawable.gallery_btn_1, R.drawable.gallery_btn_2, R.drawable.gallery_btn_3, R.drawable.gallery_btn_4};
-//    public static String[] prgmNameList = new String[]{"Police", "Pizza", "Girl Friend", "MOM", "Santa Claus"};
-//    public static String[] prgmPhoneList = new String[]{"15", "03126688776", "03007865456", "0426754346", "0548755726"};
     static CharAdapter adapter;
     static ArrayList<ModelCharacter> list;
     static Intent returnIntent;
@@ -97,12 +94,17 @@ public class CharacterActivity extends Fragment {
 
     public static  void Reset()
     {
-        characterDAO = new CharacterDAO(adapter.context);
-        characterDAO = new CharacterDAO(listView.getContext());
-        list = new ArrayList<>() ;
-        list = characterDAO.getAll() ;
-        adapter = new CharAdapter(adapter.context, list) ;
-        listView.setAdapter(adapter);
+        try {
+            characterDAO = new CharacterDAO(adapter.context);
+            characterDAO = new CharacterDAO(listView.getContext());
+            list = new ArrayList<>() ;
+            list = characterDAO.getAll() ;
+            adapter = new CharAdapter(adapter.context, list) ;
+            listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
     public void  characterClick(int pos) {
         Toast.makeText(getContext(), " có chạy vào ", Toast.LENGTH_SHORT).show();

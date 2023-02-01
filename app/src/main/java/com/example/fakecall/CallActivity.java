@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.InterstitialAd;
@@ -31,6 +32,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.fakecall.Fagment.TabViewDataSingleton;
+
+import java.util.Base64;
 
 public class CallActivity extends AppCompatActivity {
     ImageView accept;
@@ -80,6 +83,7 @@ public class CallActivity extends AppCompatActivity {
         window.addFlags(FLAG_SHOW_WHEN_LOCKED);
         window.addFlags(FLAG_TURN_SCREEN_ON);
         super.onCreate(savedInstanceState);
+        Log.e("select ", "onCreate: " +  selectSreen.idlayout);
         switch (selectSreen.idlayout)
         {
             case 0 :
@@ -94,9 +98,7 @@ public class CallActivity extends AppCompatActivity {
             case 3:
                 setContentView(R.layout.call4);
                 break;
-
         }
-
        // loadInterstitialAd();
         calling = (RelativeLayout) findViewById(R.id.calling);
         callerImg = (ImageView) findViewById(R.id.caller_image);
@@ -229,8 +231,9 @@ public class CallActivity extends AppCompatActivity {
         if (sharedPref.getString("ring", "").equals("") && r != null) {
             r.stop();
         }
-        startActivity(new Intent(this, FragmentHome.class));
+        startActivity(new Intent(this, FragmentMain.class));
         finish();
+        return;
     }
 
     public void OnClickSpeaker(View view) {
@@ -283,6 +286,7 @@ public class CallActivity extends AppCompatActivity {
             mp.prepare();
             mp.seekTo(len);
             mp.start();
+            mp.setLooping(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -317,6 +321,7 @@ public class CallActivity extends AppCompatActivity {
             mp.setDataSource(path);
             mp.prepare();
             mp.start();
+            mp.setLooping(true);
             mp.setOnCompletionListener(new OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
                     mAudioManager.setStreamVolume(3, originalVolume, 0);
@@ -326,80 +331,27 @@ public class CallActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     @TargetApi(16)
     void setCaller() {
         String name = sharedPref.getString("name", "");
         String phone = sharedPref.getString("number", "");
         String image = sharedPref.getString("image", "");
-        Log.e("TAG", "setCaller: "+image );
         nameText.setText(name);
         phoneText.setText(phone);
-        int obj = -1;
-//        switch (image.hashCode()) {
-//            case 0:
-//                if (image.equals("")) {
-//                    obj = 0;
-//                    break;
-//                }
-//                break;
-//            case 48:
-//                if (image.equals("0")) {
-//                    obj = 1;
-//                    break;
-//                }
-//                break;
-//            case 49:
-//                if (image.equals("1")) {
-//                    obj = 2;
-//                    break;
-//                }
-//                break;
-//            case 50:
-//                if (image.equals("2")) {
-//                    obj = 3;
-//                    break;
-//                }
-//                break;
-//            case 51:
-//                if (image.equals("3")) {
-//                    obj = 4;
-//                    break;
-//                }
-//                break;
-//            case 52:
-//                if (image.equals("4")) {
-//                    obj = 5;
-//                    break;
-//                }
-//                break;
-//        }
-//        switch (obj) {
-//            case 0:
-//                callerImg.setImageResource(R.drawable.person);
-//                return;
-//            case 1:
-//                callerImg.setImageResource(R.drawable.gallery_btn_0);
-//                return;
-//            case 2:
-//                callerImg.setImageResource(R.drawable.gallery_btn_1);
-//                return;
-//            case 3:
-//                callerImg.setImageResource(R.drawable.gallery_btn_2);
-//                return;
-//            case 4:
-//                callerImg.setImageResource(R.drawable.gallery_btn_3);
-//                return;
-//            case 5:
-//                callerImg.setImageResource(R.drawable.gallery_btn_4);
-//                return;
-//            default:
-             //   callerImg.setImageBitmap(TabViewDataSingleton.getImg());
-        Glide.with(this)
-                .load(TabViewDataSingleton.getImg())
-                .asBitmap()
-                .into(callerImg) ;
-        //}
+        byte[] imgCheck = TabViewDataSingleton.getImg();
+        if (imgCheck== null)
+        {
+            Glide.with(this)
+                    .load(R.drawable.person)
+                    .asBitmap()
+                    .into(callerImg);
+        }
+        else {
+            Glide.with(this)
+                    .load(TabViewDataSingleton.getImg())
+                    .asBitmap()
+                    .into(callerImg);
+        }
     }
 
     public void onBackPressed() {
@@ -442,11 +394,12 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void endCall(View view) {
-        startActivity(new Intent(this, FragmentHome.class));
+        startActivity(new Intent(this, FragmentMain.class));
         //showInterstitial();
         finish();
+        System.exit(0) ;
+        return;
     }
-
 
     public void OnClickcalende(View view) {
         // boolean checkCalender = true ;
